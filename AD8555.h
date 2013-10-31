@@ -4,11 +4,18 @@
 class AD8555
 {
 	public:
-		AD8555(int OutputPin);
-		bool setSecStageGain(SHORT 
+		AD8555(int outputPin);
+		bool setSecondStageGain(int value);
+		bool setFirstStageGain(int value);
+		bool setOffset(int value);
+		bool simulate();
+		bool program();
 		
 	private:
-		int m_outPin;
+		uint8_t m_outPin;
+		int m_SSG;
+		int m_FSG;
+		int m_OFS;
 }
 
 #endif
