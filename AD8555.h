@@ -12,10 +12,20 @@ class AD8555
 		bool program();
 		
 	private:
+		void blowSSGFuse(unsigned char Value);
+		void blowFSGFuse(unsigned char Value);
+		void blowOFSFuse(unsigned char Value);
+		void blowMSF();
+		void sendField0();
+		void sendField1(unsigned char value);
+		void sendField2(unsigned char value);
+		void sendField3();
+		void sendField4(unsigned char value);
+		void sendField5();
 		void sendBit(bool value);
 		void send0();
 		void send1();
-		uint8_t outPin;
+		int outPin;
 		int SSG;
 		int FSG;
 		int OFS;
