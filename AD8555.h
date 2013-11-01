@@ -12,10 +12,13 @@ class AD8555
 		bool program();
 		
 	private:
-		uint8_t m_outPin;
-		int m_SSG;
-		int m_FSG;
-		int m_OFS;
+		void sendBit(bool value);
+		void send0();
+		void send1();
+		uint8_t outPin;
+		int SSG;
+		int FSG;
+		int OFS;
 }
 
 #endif
