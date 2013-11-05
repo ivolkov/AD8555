@@ -1,10 +1,10 @@
-#include "arduino_ad8555.h"
+#include "AD8555.h"
 
-AD8555::AD8555(uint8_t OutputPin)
+AD8555::AD8555(int outputPin)
 {
-	outPin = OutputPin;
-	pinMode(m_outPin, OUTPUT);
-	digitalWrite(m_outPin, LOW);
+	outPin = outputPin;
+	pinMode(outPin, OUTPUT);
+	digitalWrite(outPin, LOW);
 }
 
 bool AD8555::setSecondStageGain(int value)
@@ -202,14 +202,14 @@ void AD8555::sendBit(bool value)
 
 void AD8555::send0()
 {
-	digitalWrite(outpin, HIGH);
-	digitalWrite(outpin, LOW);
+	digitalWrite(outPin, HIGH);
+	digitalWrite(outPin, LOW);
 	delay(0);
 }
 
 void AD8555::send1()
 {
-	digitalWrite(outpin, HIGH);
+	digitalWrite(outPin, HIGH);
 	delay(0);
 	delay(0);
 	delay(0);
@@ -219,6 +219,6 @@ void AD8555::send1()
 	delay(0);
 	delay(0);
 	delay(0);
-	digitalWrite(outpin, LOW);
+	digitalWrite(outPin, LOW);
 	delay(0);
 }

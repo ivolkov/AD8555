@@ -1,5 +1,7 @@
-#ifndef Arduino_ad8555_h
-#define Arduino_ad8555_h
+#ifndef AD8555_h
+#define AD8555_h
+
+#include "Arduino.h" 
 
 class AD8555
 {
@@ -8,8 +10,8 @@ class AD8555
 		bool setSecondStageGain(int value);
 		bool setFirstStageGain(int value);
 		bool setOffset(int value);
-		bool simulate();
-		bool program();
+		void simulate();
+		void program();
 		
 	private:
 		void blowSSGFuse(unsigned char Value);
@@ -29,6 +31,6 @@ class AD8555
 		int SSG;
 		int FSG;
 		int OFS;
-}
+};
 
 #endif
