@@ -1,168 +1,131 @@
-/*
-Authors: Ilya Volkov, Maxim Dmitrov
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+//
+//    FILE: AD8555.cpp
+// AUTHORS : Ilya Volkov, Maxim Dmitrov
+// VERSION: 0.1.01
+//    DATE: 2013-11-07
+//
+// HISTORY:
+// 0.1.00 - 2013-11-07 initial version
+// 0.1.01 - 2013-11-07 refactored 
+//
+// Released to the public domain
+//
 
 #include "AD8555.h"
 
-AD8555::AD8555(int outputPin)
+AD8555::AD8555(uint8_t outputPin)
 {
-	outPin = outputPin;
-	pinMode(outPin, OUTPUT);
-	digitalWrite(outPin, LOW);
+    outPin = outputPin;
+    digitalWrite(outPin, LOW);
+    pinMode(outPin, OUTPUT);
 }
 
-bool AD8555::setSecondStageGain(int value)
+bool AD8555::setSecondStageGain(uint8_t value)
 {
-	if ((value < 0) || (value > 7))
-		return false;
-		
-	SSG = value;
-	return true;
+    if (value > 7) return false;
+    SSG = value;
+    return true;
 }
 
-bool AD8555::setFirstStageGain(int value)
+bool AD8555::setFirstStageGain(uint8_t value)
 {
-	if ((value < 0) || (value > 127))
-		return false;
-	
-	FSG = value;
-	return true;
+    if (value > 127) return false;
+    FSG = value;
+    return true;
 }
 
-bool AD8555::setOffset(int value)
+bool AD8555::setOffset(uint8_t value)
 {
-	if ((value < 0) || (value > 255))
-		return false;
-		
-	OFS = value;
+    OFS = value;
+    return true;
 }
 
 void AD8555::simulate()
 {
-	sendField0();      // start packet
-	sendField1(0b01);  //  simulate
-	sendField2(0b00);  //  second stage gain
-	sendField3();      // dummy
-	sendField4(SSG);   // value 
-	sendField5();      // stop packet
-	  
-	sendField0();      // start packet
-	sendField1(0b01);  //  simulate
-	sendField2(0b01);  //  first stage gain
-	sendField3();      // dummy
-	sendField4(FSG);   // value
-	sendField5();      // stop packet
-	  
-	sendField0();      // start packet
-	sendField1(0b01);  //  simulate
-	sendField2(0b10);  //  output offset
-	sendField3();      // dummy
-	sendField4(OFS);   // value
-	sendField5();      // stop packet
+    sendFields(0b01, 0b00, SSG);
+    sendFields(0b01, 0b01, FSG);
+    sendFields(0b01, 0b10, OFS);
 }
+
+void AD8555::sendFields(uint8_t mode, uint8_t func, uint8_t value)
+{
+    sendField0();      // start packet
+    sendField1(mode);
+    sendField2(func);
+    sendField3();
+    sendField4(value);
+    sendField5();      // stop packet
+}
+
 
 void AD8555::program()
 {
-	unsigned char par;
+    uint8_t par;
 
-	for (int i = 0 ; i < 8 ; i++)
+	for (uint8_t i = 0; i < 8; i++) {
 		if (((SSG >> i) & 1) == 1) {
 			par = (1 << i);
 			blowSSGFuse(par);
 		}
+	}
 
-	for (int i = 0 ; i < 8 ; i++)
+	for (uint8_t i = 0; i < 8; i++) {
 		if (((FSG >> i) & 1) == 1) {
 			par = (1 << i);
 			blowFSGFuse(par);
 		}
+	}
 
-	for (int i = 0 ; i < 8 ; i++)
-		if (((OFS >> i) &1) == 1) {
+	for (uint8_t i = 0; i < 8; i++) {
+		if (((OFS >> i) & 1) == 1) {
 			par = (1 << i);
 			blowOFSFuse(par);
 		}
+	}
 
 	blowMSF();
 }
 
 void AD8555::blowSSGFuse(unsigned char Value)
 {
-	sendField0();      // start packet
-	sendField1(0b10);  // program
-	sendField2(0b00);  // second stage gain
-	sendField3();      // dummy
-	sendField4(Value); // value
-	sendField5();      // stop packet
-	delay(1);
+    sendFields(0b10, 0b00, Value);
+    delay(1);
 }
 
 void AD8555::blowFSGFuse(unsigned char Value)
 {
-	sendField0();      // start packet
-	sendField1(0b10);  // program
-	sendField2(0b01);  // second stage gain
-	sendField3();      // dummy
-	sendField4(Value); // value
-	sendField5();      // stop packet
-	delay(1);
+    sendFields(0b10, 0b01, Value);
+    delay(1);
 }
 
 void AD8555::blowOFSFuse(unsigned char Value)
 {
-	sendField0();      // start packet
-	sendField1(0b10);  // program
-	sendField2(0b10);  // second stage gain
-	sendField3();      // dummy
-	sendField4(Value); // value
-	sendField5();      // stop packet
-	delay(1);
+    sendFields(0b10, 0b10, Value);
+    delay(1);
 }
 
 void AD8555::blowMSF()
 {
-	sendField0();            // start packet
-	sendField1(0b10);        // program
-	sendField2(11);          // other functions
-	sendField3();            // dummy
-	sendField4(0b00000001);  // master fuse
-	sendField5();            // stop packet
-	delay(1);
+    sendFields(0b10, 0b11, 0b00000001);
+    delay(1);
 }
 
 void AD8555::sendField0()
 {
-	sendBit(1);
-	sendBit(0);
-	sendBit(0);
-	sendBit(0);
-
-	sendBit(0);
-	sendBit(0);
-	sendBit(0);
-	sendBit(0);
-
-	sendBit(0);
-	sendBit(0);
-	sendBit(0);
-	sendBit(1);
+    sendBit(1);
+    for (uint8_t i = 0; i < 10; i++) {
+		sendBit(0);
+	}
+    sendBit(1);
 }
 
-void AD8555::sendField1(unsigned char value)
+void AD8555::sendField1(uint8_t value)
 {
 	sendBit((value >> 1) & 1);
 	sendBit(value & 1);
 }
 
-void AD8555::sendField2(unsigned char value)
+void AD8555::sendField2(uint8_t value)
 {
 	sendBit((value >> 1) & 1);  
 	sendBit(value & 1);
@@ -174,35 +137,22 @@ void AD8555::sendField3()
 	sendBit(0);
 }
 
-void AD8555::sendField4(unsigned char value)
-{  
-	sendBit((value >> 7) & 1);
-	sendBit((value >> 6) & 1);
-	sendBit((value >> 5) & 1);
-	sendBit((value >> 4) & 1);
-	sendBit((value >> 3) & 1);
-	sendBit((value >> 2) & 1);
-	sendBit((value >> 1) & 1);
-	sendBit(value & 1);
+void AD8555::sendField4(uint8_t value)
+{
+    uint8_t i = 8;
+    do {
+        i--;
+        sendBit((value >> i) & 1);
+    } while(i > 0);
 }
 
 void AD8555::sendField5()
 {
-	sendBit(0);
-	sendBit(1);
-	sendBit(1);
-	sendBit(1);
-
-	sendBit(1);
-	sendBit(1);
-	sendBit(1);
-	sendBit(1);
-
-	sendBit(1);
-	sendBit(1);
-	sendBit(1);
-	sendBit(0);
-}  
+    sendBit(0);
+    for (uint8_t i = 0; i < 10; i++)
+		sendBit(1);
+    sendBit(0);
+}
 
 void AD8555::sendBit(bool value)
 {
@@ -215,22 +165,13 @@ void AD8555::sendBit(bool value)
 void AD8555::send0()
 {
 	digitalWrite(outPin, HIGH);
-	digitalWrite(outPin, LOW);
-	delay(0);
+	digitalWrite(outPin, LOW);	
 }
 
 void AD8555::send1()
 {
 	digitalWrite(outPin, HIGH);
-	delay(0);
-	delay(0);
-	delay(0);
-	delay(0);
-	delay(0);
-	delay(0);
-	delay(0);
-	delay(0);
-	delay(0);
+	delayMicroseconds(65);
 	digitalWrite(outPin, LOW);
-	delay(0);
+	delayMicroseconds(14);
 }
