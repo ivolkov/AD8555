@@ -89,25 +89,25 @@ void AD8555::program()
 void AD8555::blowSSGFuse(uint8_t Value)
 {
     sendData(FUNC_PROGRAM, PAR_SSG_CODE, Value);
-    delay(1);
+    delayMicroseconds(1100);
 }
 
 void AD8555::blowFSGFuse(uint8_t Value)
 {
     sendData(FUNC_PROGRAM, PAR_FSG_CODE, Value);
-    delay(1);
+    delayMicroseconds(1100);
 }
 
 void AD8555::blowOFSFuse(uint8_t Value)
 {
     sendData(FUNC_PROGRAM, PAR_OFS_CODE, Value);
-    delay(1);
+    delayMicroseconds(1100);
 }
 
 void AD8555::blowMSF()
 {
     sendData(FUNC_PROGRAM, PAR_OTHER_FUNC, 1);
-    delay(1);
+    delayMicroseconds(1100);
 }
 
 void AD8555::sendStart()
