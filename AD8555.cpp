@@ -54,7 +54,7 @@ void AD8555::sendData(uint8_t mode, uint8_t func, uint8_t value)
     sendFunc(func);
     sendDummy();
     sendValue(value);
-    sendStop();		// stop packet
+    sendStop();
 }
 
 
@@ -63,21 +63,21 @@ void AD8555::program()
     uint8_t parity;
 
 	for (uint8_t i = 0; i < 8; i++) {
-		if (((SSG >> i) & 1) == 1) {
+		if ((SSG >> i) & 1) {
 			parity = (1 << i);
 			blowSSGFuse(parity);
 		}
 	}
 
 	for (uint8_t i = 0; i < 8; i++) {
-		if (((FSG >> i) & 1) == 1) {
+		if ((FSG >> i) & 1) {
 			parity = (1 << i);
 			blowFSGFuse(parity);
 		}
 	}
 
 	for (uint8_t i = 0; i < 8; i++) {
-		if (((OFS >> i) & 1) == 1) {
+		if ((OFS >> i) & 1) {
 			parity = (1 << i);
 			blowOFSFuse(parity);
 		}
