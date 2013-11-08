@@ -165,13 +165,14 @@ void AD8555::sendBit(bool value)
 void AD8555::send0()
 {
 	digitalWrite(outPin, HIGH);
-	digitalWrite(outPin, LOW);	
+    digitalWrite(outPin, LOW);
+    delayMicroseconds(10);
 }
 
 void AD8555::send1()
 {
 	digitalWrite(outPin, HIGH);
-	delayMicroseconds(65);
+    delayMicroseconds(DELAY_US_HIGH);
 	digitalWrite(outPin, LOW);
-	delayMicroseconds(14);
+    delayMicroseconds(10);
 }

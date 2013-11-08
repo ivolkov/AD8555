@@ -13,6 +13,9 @@
 #define PAR_OFS_CODE	0b10
 #define PAR_OTHER_FUNC	0b11
 
+#define DELAY_US_HIGH   65
+#define DELAY_US_PAUSE  10
+
 class AD8555
 {
 	public:
