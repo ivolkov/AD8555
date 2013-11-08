@@ -22,19 +22,19 @@ class AD8555
 		bool setOffset(uint8_t value);
 		void simulate();
 		void program();
-		void sendFields(uint8_t mode, uint8_t func, uint8_t value);
+		void sendData(uint8_t mode, uint8_t func, uint8_t value);
 		
 	private:
 		void blowSSGFuse(uint8_t Value);
 		void blowFSGFuse(uint8_t Value);
 		void blowOFSFuse(uint8_t Value);
 		void blowMSF();
-		void sendField0();
-		void sendField1(uint8_t value);
-		void sendField2(uint8_t value);
-		void sendField3();
-		void sendField4(uint8_t value);
-		void sendField5();
+		void sendStart();
+		void sendMode(uint8_t value);
+		void sendFunc(uint8_t value);
+		void sendDummy();
+		void sendValue(uint8_t value);
+		void sendStop();
 		void sendBit(bool value);
 		void send0();
 		void send1();

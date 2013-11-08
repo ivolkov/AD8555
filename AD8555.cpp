@@ -42,19 +42,19 @@ bool AD8555::setOffset(uint8_t value)
 
 void AD8555::simulate()
 {
-    sendFields(FUNC_SIMULATE, PAR_SSG_CODE, SSG);
-    sendFields(FUNC_SIMULATE, PAR_FSG_CODE, FSG);
-    sendFields(FUNC_SIMULATE, PAR_OFS_CODE, OFS);
+    sendData(FUNC_SIMULATE, PAR_SSG_CODE, SSG);
+    sendData(FUNC_SIMULATE, PAR_FSG_CODE, FSG);
+    sendData(FUNC_SIMULATE, PAR_OFS_CODE, OFS);
 }
 
-void AD8555::sendFields(uint8_t mode, uint8_t func, uint8_t value)
+void AD8555::sendData(uint8_t mode, uint8_t func, uint8_t value)
 {
-    sendField0();		// start packet
-    sendField1(mode);
-    sendField2(func);
-    sendField3();		// dummy packet
-    sendField4(value);
-    sendField5();		// stop packet
+    sendStart();
+    sendMode(mode);
+    sendFunc(func);
+    sendDummy();
+    sendValue(value);
+    sendStop();		// stop packet
 }
 
 
@@ -88,29 +88,29 @@ void AD8555::program()
 
 void AD8555::blowSSGFuse(uint8_t Value)
 {
-    sendFields(FUNC_PROGRAM, PAR_SSG_CODE, Value);
+    sendData(FUNC_PROGRAM, PAR_SSG_CODE, Value);
     delay(1);
 }
 
 void AD8555::blowFSGFuse(uint8_t Value)
 {
-    sendFields(FUNC_PROGRAM, PAR_FSG_CODE, Value);
+    sendData(FUNC_PROGRAM, PAR_FSG_CODE, Value);
     delay(1);
 }
 
 void AD8555::blowOFSFuse(uint8_t Value)
 {
-    sendFields(FUNC_PROGRAM, PAR_OFS_CODE, Value);
+    sendData(FUNC_PROGRAM, PAR_OFS_CODE, Value);
     delay(1);
 }
 
 void AD8555::blowMSF()
 {
-    sendFields(FUNC_PROGRAM, PAR_OTHER_FUNC, 1);
+    sendData(FUNC_PROGRAM, PAR_OTHER_FUNC, 1);
     delay(1);
 }
 
-void AD8555::sendField0()
+void AD8555::sendStart()
 {
     sendBit(1);
     for (uint8_t i = 0; i < 10; i++) {
@@ -119,25 +119,25 @@ void AD8555::sendField0()
     sendBit(1);
 }
 
-void AD8555::sendField1(uint8_t value)
+void AD8555::sendMode(uint8_t value)
 {
 	sendBit((value >> 1) & 1);
 	sendBit(value & 1);
 }
 
-void AD8555::sendField2(uint8_t value)
+void AD8555::sendFunc(uint8_t value)
 {
 	sendBit((value >> 1) & 1);  
 	sendBit(value & 1);
 }
 
-void AD8555::sendField3()
+void AD8555::sendDummy()
 {
 	sendBit(1);
 	sendBit(0);
 }
 
-void AD8555::sendField4(uint8_t value)
+void AD8555::sendValue(uint8_t value)
 {
     uint8_t i = 8;
     do {
@@ -146,7 +146,7 @@ void AD8555::sendField4(uint8_t value)
     } while(i > 0);
 }
 
-void AD8555::sendField5()
+void AD8555::sendStop()
 {
     sendBit(0);
     for (uint8_t i = 0; i < 10; i++)
