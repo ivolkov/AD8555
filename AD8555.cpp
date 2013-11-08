@@ -86,19 +86,19 @@ void AD8555::program()
 	blowMSF();
 }
 
-void AD8555::blowSSGFuse(unsigned char Value)
+void AD8555::blowSSGFuse(uint8_t Value)
 {
     sendFields(FUNC_PROGRAM, PAR_SSG_CODE, Value);
     delay(1);
 }
 
-void AD8555::blowFSGFuse(unsigned char Value)
+void AD8555::blowFSGFuse(uint8_t Value)
 {
     sendFields(FUNC_PROGRAM, PAR_FSG_CODE, Value);
     delay(1);
 }
 
-void AD8555::blowOFSFuse(unsigned char Value)
+void AD8555::blowOFSFuse(uint8_t Value)
 {
     sendFields(FUNC_PROGRAM, PAR_OFS_CODE, Value);
     delay(1);
