@@ -42,44 +42,44 @@ bool AD8555::setOffset(uint8_t value)
 
 void AD8555::simulate()
 {
-    sendFields(0b01, 0b00, SSG);
-    sendFields(0b01, 0b01, FSG);
-    sendFields(0b01, 0b10, OFS);
+    sendFields(FUNC_SIMULATE, PAR_SSG_CODE, SSG);
+    sendFields(FUNC_SIMULATE, PAR_FSG_CODE, FSG);
+    sendFields(FUNC_SIMULATE, PAR_OFS_CODE, OFS);
 }
 
 void AD8555::sendFields(uint8_t mode, uint8_t func, uint8_t value)
 {
-    sendField0();      // start packet
+    sendField0();		// start packet
     sendField1(mode);
     sendField2(func);
-    sendField3();
+    sendField3();		// dummy packet
     sendField4(value);
-    sendField5();      // stop packet
+    sendField5();		// stop packet
 }
 
 
 void AD8555::program()
 {
-    uint8_t par;
+    uint8_t parity;
 
 	for (uint8_t i = 0; i < 8; i++) {
 		if (((SSG >> i) & 1) == 1) {
-			par = (1 << i);
-			blowSSGFuse(par);
+			parity = (1 << i);
+			blowSSGFuse(parity);
 		}
 	}
 
 	for (uint8_t i = 0; i < 8; i++) {
 		if (((FSG >> i) & 1) == 1) {
-			par = (1 << i);
-			blowFSGFuse(par);
+			parity = (1 << i);
+			blowFSGFuse(parity);
 		}
 	}
 
 	for (uint8_t i = 0; i < 8; i++) {
 		if (((OFS >> i) & 1) == 1) {
-			par = (1 << i);
-			blowOFSFuse(par);
+			parity = (1 << i);
+			blowOFSFuse(parity);
 		}
 	}
 
@@ -88,25 +88,25 @@ void AD8555::program()
 
 void AD8555::blowSSGFuse(unsigned char Value)
 {
-    sendFields(0b10, 0b00, Value);
+    sendFields(FUNC_PROGRAM, PAR_SSG_CODE, Value);
     delay(1);
 }
 
 void AD8555::blowFSGFuse(unsigned char Value)
 {
-    sendFields(0b10, 0b01, Value);
+    sendFields(FUNC_PROGRAM, PAR_FSG_CODE, Value);
     delay(1);
 }
 
 void AD8555::blowOFSFuse(unsigned char Value)
 {
-    sendFields(0b10, 0b10, Value);
+    sendFields(FUNC_PROGRAM, PAR_OFS_CODE, Value);
     delay(1);
 }
 
 void AD8555::blowMSF()
 {
-    sendFields(0b10, 0b11, 0b00000001);
+    sendFields(FUNC_PROGRAM, PAR_OTHER_FUNC, 1);
     delay(1);
 }
 
