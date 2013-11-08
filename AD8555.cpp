@@ -207,9 +207,9 @@ void AD8555::sendField5()
 void AD8555::sendBit(bool value)
 {
 	if (value)
-	send1();
+		send1();
 	else
-	send0();
+		send0();
 }
 
 void AD8555::send0()
