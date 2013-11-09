@@ -62,7 +62,7 @@ void loop() {
     Serial.println("Make sure to meet programming requirements described in AD8555 datasheet:");
     Serial.println("- A 5.5 V supply is required");
     Serial.println("- The power supply must be able to deliver 250 mA of current");
-    Serial.println("- At least 0.1 μF of decoupling capacitance is needed across the power pins of the device");
+    Serial.println("- At least 0.1 uF of decoupling capacitance is needed across the power pins of the device");
     
     Serial.println("\nWARNING: This operation can not be undone, all programming values are permanent");
     Serial.println("Continue? [y/N]");
