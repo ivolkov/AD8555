@@ -20,6 +20,8 @@
 #define DELAY_US_HIGH   65
 #define DELAY_US_PAUSE  10
 
+#define DUMMY_PACKAGE	0b00000010
+
 class AD8555
 {
 	public:
@@ -37,9 +39,7 @@ class AD8555
 		void blowOFSFuse(uint8_t Value);
 		void blowMSF();
 		void sendStart();
-		void sendMode(uint8_t value);
-		void sendFunc(uint8_t value);
-		void sendDummy();
+		void sendParam(uint8_t value);
 		void sendValue(uint8_t value);
 		void sendStop();
 		void sendBit(bool value);

@@ -6,7 +6,7 @@
 //
 // HISTORY:
 // 0.1.00 - 2013-11-07 initial version
-// 0.1.01 - 2013-11-07 refactored 
+// 0.1.01 - 2013-11-09 refactored 
 //
 // Released to the public domain
 //
@@ -50,9 +50,9 @@ void AD8555::simulate()
 void AD8555::sendData(uint8_t mode, uint8_t func, uint8_t value)
 {
     sendStart();
-    sendMode(mode);
-    sendFunc(func);
-    sendDummy();
+    sendParam(mode);
+    sendParam(func);
+    sendParam(DUMMY_PACKAGE);
     sendValue(value);
     sendStop();
 }
@@ -119,22 +119,10 @@ void AD8555::sendStart()
     sendBit(1);
 }
 
-void AD8555::sendMode(uint8_t value)
+void AD8555::sendParam(uint8_t value)
 {
 	sendBit((value >> 1) & 1);
 	sendBit(value & 1);
-}
-
-void AD8555::sendFunc(uint8_t value)
-{
-	sendBit((value >> 1) & 1);  
-	sendBit(value & 1);
-}
-
-void AD8555::sendDummy()
-{
-	sendBit(1);
-	sendBit(0);
 }
 
 void AD8555::sendValue(uint8_t value)
