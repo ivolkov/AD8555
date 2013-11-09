@@ -1,3 +1,7 @@
+/* This is a library for AD8555/8556 device
+ * Discussion here:
+ * --> http://forum.arduino.cc/index.php?topic=197671.0 */
+
 #ifndef AD8555_h
 #define AD8555_h
 
